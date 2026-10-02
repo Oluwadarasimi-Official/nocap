@@ -1,5 +1,5 @@
-import { json } from "@/lib/api";
+import { NextResponse } from "next/server";
 
 export async function GET() {
-  return json({ ok: true, app: "nocap", time: new Date().toISOString() });
+  return NextResponse.json({ ok: true, app: "nocap", time: new Date().toISOString() });
 }

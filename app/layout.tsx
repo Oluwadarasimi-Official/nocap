@@ -10,13 +10,19 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const sb = await supabaseServer();
-  const { data } = await sb.auth.getUser();
-  const user = data.user;
+  let userEmail: string | null = null;
   let username: string | null = null;
-  if (user) {
-    const { data: prof } = await sb.from("nc_profiles").select("username").eq("id", user.id).maybeSingle();
-    username = (prof as { username: string | null } | null)?.username ?? null;
+  try {
+    const sb = await supabaseServer();
+    const { data } = await sb.auth.getUser();
+    const user = data.user;
+    userEmail = user?.email ?? null;
+    if (user) {
+      const { data: prof } = await sb.from("nc_profiles").select("username").eq("id", user.id).maybeSingle();
+      username = (prof as { username: string | null } | null)?.username ?? null;
+    }
+  } catch {
+    /* auth is best-effort in the layout — never crash the app */
   }
 
   return (
@@ -37,7 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               "radial-gradient(900px 500px at 15% -5%, rgba(163,230,53,0.07), transparent 60%), radial-gradient(800px 500px at 90% 10%, rgba(16,185,129,0.06), transparent 60%)",
           }}
         />
-        <Navbar userEmail={user?.email ?? null} username={username} />
+        <Navbar userEmail={userEmail} username={username} />
         <main className="mx-auto w-full max-w-7xl px-4 pb-24 pt-8 sm:px-6">{children}</main>
         <footer className="border-t border-white/10 py-8">
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 text-xs text-slate-500 sm:flex-row sm:px-6">
