@@ -118,7 +118,7 @@ function parseGradeJson(text: string, rubric: RubricCriterion[], model: string):
 async function callGroq(system: string, user: string): Promise<{ text: string; model: string }> {
   const key = process.env.GROQ_API_KEY;
   if (!key) throw new Error("GROQ_API_KEY is not configured");
-  const model = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
+  const model = process.env.GROQ_MODEL ?? "openai/gpt-oss-120b";
   const res = await fetch(GROQ_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
@@ -143,7 +143,7 @@ async function callGroq(system: string, user: string): Promise<{ text: string; m
 async function callGemini(system: string, user: string): Promise<{ text: string; model: string }> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("GEMINI_API_KEY is not configured");
-  const model = process.env.GEMINI_MODEL ?? "gemini-2.0-flash";
+  const model = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
   const res = await fetch(geminiUrl(model, key), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
